@@ -50,7 +50,5 @@ export default NextAuth({
             return session;
         },
     },
-    jwt: {
-        maxAge: 60 * 60 * 24 * 30,
-    },
+    secret: 'tuannguyensn2001',
 });
