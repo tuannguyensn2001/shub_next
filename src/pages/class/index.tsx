@@ -2,6 +2,7 @@ import GroupYourClass from 'src/components/GroupYourClass';
 import GroupSearchClass from 'src/components/GroupSearchClass';
 import CardClass from 'src/components/CardClass';
 import { useQuery } from 'react-query';
+import Auth from 'src/components/Auth';
 
 // import { fetchOwnClass } from '~/services/class';
 
@@ -24,13 +25,14 @@ function ClassPage() {
             <div>
                 <div className={'tw-grid tw-grid-cols-5 tw-mt-5 tw-gap-5'}>
                     {data?.data &&
-                        data?.data?.map((item) => (
-                            <CardClass
-                                id={item.id}
-                                name={item.name}
-                                code={item.code}
-                                key={item.id}
-                            />
+                        data?.data?.map((item, index) => (
+                            // <CardClass
+                            //     id={item.id}
+                            //     name={item.name}
+                            //     code={item.code}
+                            //     key={item.id}
+                            // />
+                            <div key={index}>abc</div>
                         ))}
                 </div>
             </div>
@@ -38,4 +40,4 @@ function ClassPage() {
     );
 }
 
-export default ClassPage;
+export default Auth(ClassPage);

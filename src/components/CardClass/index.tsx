@@ -14,6 +14,7 @@ import {
 } from '@chakra-ui/icons';
 import { useRouter } from 'next/router';
 import { IClass } from 'src/models/IClass';
+import Image from 'next/image';
 
 type Prop = Pick<IClass, 'id' | 'name' | 'code'>;
 
@@ -27,10 +28,17 @@ function CardClass({ name, code, id }: Prop) {
             }
         >
             <div className={'tw-w-full'}>
-                <img
-                    className={'tw-h-[132px] tw-rounded-t-xl'}
-                    src="https://shub-storage.sgp1.cdn.digitaloceanspaces.com/profile_images/44-01.jpg"
-                    alt=""
+                {/*<img*/}
+                {/*    className={'tw-h-[132px] tw-rounded-t-xl'}*/}
+                {/*    src="https://shub-storage.sgp1.cdn.digitaloceanspaces.com/profile_images/44-01.jpg"*/}
+                {/*    alt=""*/}
+                {/*/>*/}
+                <Image
+                    src={
+                        'https://shub-storage.sgp1.cdn.digitaloceanspaces.com/profile_images/44-01.jpg'
+                    }
+                    width={100}
+                    height={100}
                 />
             </div>
             <div className={'tw-flex tw-justify-between tw-py-3 tw-px-4'}>

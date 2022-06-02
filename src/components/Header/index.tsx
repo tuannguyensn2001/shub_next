@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import styles from './style.module.scss';
 import Link from 'next/link';
 import { Avatar } from '@chakra-ui/react';
@@ -30,9 +31,14 @@ function Header() {
                         'tw-h-full tw-flex tw-flex-col tw-justify-center'
                     }
                 >
-                    <img
-                        src="https://shub.edu.vn/images/brand-blue.svg"
-                        alt=""
+                    {/*<img*/}
+                    {/*    src="https://shub.edu.vn/images/brand-blue.svg"*/}
+                    {/*    alt=""*/}
+                    {/*/>*/}
+                    <Image
+                        src={'https://shub.edu.vn/images/brand-blue.svg'}
+                        width={100}
+                        height={100}
                     />
                 </div>
                 <div>

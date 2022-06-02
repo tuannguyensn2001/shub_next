@@ -1,162 +1,154 @@
-import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { signIn } from 'next-auth/react';
+import {
+    Button,
+    FormControl,
+    FormLabel,
+    Input,
+    Select,
+    useToast,
+} from '@chakra-ui/react';
+import { AxiosError } from 'axios';
+import { useRouter } from 'next/router';
+import { Controller, useForm } from 'react-hook-form';
+import { useMutation } from 'react-query';
+import { getLogin } from 'src/repositories/auth';
+import useAuthStore from 'src/store/useAuthStore';
+import { LoginResponse } from 'src/types/auth';
+import { MyResponse } from 'src/types/response';
+import { toast } from 'src/packages/toast';
 
-function Copyright(props: any) {
-    return (
-        <Typography
-            variant="body2"
-            color="text.secondary"
-            align="center"
-            {...props}
-        >
-            {'Copyright © '}
-            <Link color="inherit" href="https://mui.com/">
-                Your Website
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
+interface LoginForm {
+    email: string;
+    password: string;
 }
 
-const theme = createTheme();
+export function Login() {
+    const { control, handleSubmit } = useForm<LoginForm>({
+        defaultValues: {
+            email: '',
+            password: '',
+        },
+    });
 
-export default function SignInSide() {
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
+    const router = useRouter();
 
-        const form = {
-            email: data.get('email'),
-            password: data.get('password'),
-        };
+    const setUser = useAuthStore((state) => state.setUser);
 
-        signIn('credentials', {
-            redirect: false,
-            ...form,
-        })
-            .then((response) => console.log(response))
-            .catch((err) => console.log(err));
+    const { mutate } = useMutation<
+        MyResponse<LoginResponse>,
+        AxiosError<MyResponse>,
+        LoginForm
+    >('create', (data) => getLogin(data), {
+        async onSuccess(response) {
+            setUser(response.data.user);
+            localStorage.setItem('accessToken', response.data.accessToken);
+            localStorage.setItem('refreshToken', response.data.refreshToken);
+            toast({
+                status: 'success',
+                description: 'Chào mừng bạn trở lại',
+            });
+            await router.push('/');
+        },
+        onError(error) {
+            console.log(error);
+            toast({
+                status: 'error',
+                title: 'Đăng nhập thất bại',
+                description: error.response?.data.message,
+            });
+        },
+    });
+
+    const submit = (data: LoginForm) => {
+        mutate(data);
     };
 
     return (
-        <ThemeProvider theme={theme}>
-            <Grid container component="main" sx={{ height: '100vh' }}>
-                <CssBaseline />
-                <Grid
-                    item
-                    xs={false}
-                    sm={4}
-                    md={7}
-                    sx={{
-                        backgroundImage:
-                            'url(https://source.unsplash.com/random)',
-                        backgroundRepeat: 'no-repeat',
-                        backgroundColor: (t) =>
-                            t.palette.mode === 'light'
-                                ? t.palette.grey[50]
-                                : t.palette.grey[900],
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                    }}
-                />
-                <Grid
-                    item
-                    xs={12}
-                    sm={8}
-                    md={5}
-                    component={Paper}
-                    elevation={6}
-                    square
-                >
-                    <Box
-                        sx={{
-                            my: 8,
-                            mx: 4,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                            <LockOutlinedIcon />
-                        </Avatar>
-                        <Typography component="h1" variant="h5">
-                            Sign in
-                        </Typography>
-                        <Box
-                            component="form"
-                            noValidate
-                            onSubmit={handleSubmit}
-                            sx={{ mt: 1 }}
-                        >
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="email"
-                                label="Email Address"
-                                name="email"
-                                autoComplete="email"
-                                autoFocus
-                            />
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                name="password"
-                                label="Password"
-                                type="password"
-                                id="password"
-                                autoComplete="current-password"
-                            />
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        value="remember"
-                                        color="primary"
+        <div>
+            <div
+                className={
+                    'tw-px-96 tw-flex tw-justify-between tw-w-full tw-fixed tw-h-[64px]'
+                }
+            >
+                <div className={'tw-flex tw-flex-col tw-justify-center'}>
+                    <img
+                        src="https://shub.edu.vn/images/brand-blue.svg"
+                        alt=""
+                    />
+                </div>
+                <div className={'tw-flex tw-flex-col tw-justify-center'}>
+                    <Select>
+                        <option value="teacher">Tôi là giáo viên</option>
+                    </Select>
+                </div>
+            </div>
+            <div className={'tw-px-96 tw-pt-[64px]'}>
+                <div className={'tw-grid tw-grid-cols-2'}>
+                    <div className={'tw-p-10'}>
+                        <div className={'tw-font-medium tw-text-2xl'}>
+                            Học sinh đăng nhập
+                        </div>
+                        <div className={'tw-mt-5'}>
+                            <form onSubmit={handleSubmit(submit)}>
+                                <div>
+                                    <Controller
+                                        control={control}
+                                        name={'email'}
+                                        render={({ field }) => (
+                                            <FormControl>
+                                                <FormLabel htmlFor={'email'}>
+                                                    Email
+                                                </FormLabel>
+                                                <Input
+                                                    {...field}
+                                                    id={'email'}
+                                                    placeholder={'Email'}
+                                                />
+                                            </FormControl>
+                                        )}
                                     />
-                                }
-                                label="Remember me"
-                            />
-                            <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                sx={{ mt: 3, mb: 2 }}
-                            >
-                                Sign In
-                            </Button>
-                            <Grid container>
-                                <Grid item xs>
-                                    <Link href="#" variant="body2">
-                                        Forgot password?
-                                    </Link>
-                                </Grid>
-                                <Grid item>
-                                    <Link href="#" variant="body2">
-                                        {"Don't have an account? Sign Up"}
-                                    </Link>
-                                </Grid>
-                            </Grid>
-                            <Copyright sx={{ mt: 5 }} />
-                        </Box>
-                    </Box>
-                </Grid>
-            </Grid>
-        </ThemeProvider>
+                                </div>
+                                <div className={'tw-mt-6'}>
+                                    <Controller
+                                        control={control}
+                                        name={'password'}
+                                        render={({ field }) => (
+                                            <FormControl>
+                                                <FormLabel htmlFor={'password'}>
+                                                    Mat khau
+                                                </FormLabel>
+                                                <Input
+                                                    type={'password'}
+                                                    {...field}
+                                                    id={'password'}
+                                                    placeholder="Mat khau"
+                                                />
+                                            </FormControl>
+                                        )}
+                                    />
+                                </div>
+                                <div className="tw-mt-10">
+                                    <Button
+                                        type={'submit'}
+                                        w={'100%'}
+                                        colorScheme={'linkedin'}
+                                    >
+                                        Đăng nhập
+                                    </Button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div>
+                        <img
+                            className={'tw-h-5/6 tw-w-5/6'}
+                            src="https://shub.edu.vn/images/illustrations/student-illustration.svg"
+                            alt=""
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 }
+
+export default Login;
