@@ -1,39 +1,34 @@
-import GroupYourClass from 'src/components/GroupYourClass';
-import GroupSearchClass from 'src/components/GroupSearchClass';
-import CardClass from 'src/components/CardClass';
-import { useQuery } from 'react-query';
+import {useQuery} from 'react-query';
 import Auth from 'src/components/Auth';
+import CardClass from 'src/components/CardClass';
+import GroupSearchClass from 'src/components/GroupSearchClass';
+import GroupYourClass from 'src/components/GroupYourClass';
+import {getOwnClass} from "src/repositories/class";
 
-// import { fetchOwnClass } from '~/services/class';
 
 function ClassPage() {
-    // const { data } = useQuery('classes', async () => {
-    //     const response = await fetchOwnClass();
-    //     return response.data.data;
-    // });
 
-    const data = {
-        data: [],
-    };
+    const {data} = useQuery("classes", () => getOwnClass())
+
 
     return (
         <div className={'tw-mx-5 tw-mt-5'}>
-            <GroupYourClass showTotal={data?.data?.length} hideTotal={0} />
+            <GroupYourClass showTotal={5} hideTotal={0}/>
             <div className="tw-mt-5">
-                <GroupSearchClass />
+                <GroupSearchClass/>
             </div>
             <div>
                 <div className={'tw-grid tw-grid-cols-5 tw-mt-5 tw-gap-5'}>
-                    {data?.data &&
-                        data?.data?.map((item, index) => (
-                            // <CardClass
-                            //     id={item.id}
-                            //     name={item.name}
-                            //     code={item.code}
-                            //     key={item.id}
-                            // />
-                            <div key={index}>abc</div>
+                    {data?.data.data &&
+                        data?.data?.data?.map((item, index) => (
+                            <CardClass
+                                id={item.id}
+                                name={item.name}
+                                code={item.code}
+                                key={item.id}
+                            />
                         ))}
+
                 </div>
             </div>
         </div>

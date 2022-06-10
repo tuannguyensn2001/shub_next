@@ -2,7 +2,7 @@
 const nextConfig = {
     reactStrictMode: false,
     images: {
-        domains: ['shub.edu.vn'],
+        domains: ['shub.edu.vn', "https://shub-storage.sgp1.cdn.digitaloceanspaces.com"],
     },
 };
 

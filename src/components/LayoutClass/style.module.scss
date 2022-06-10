@@ -1,0 +1,4 @@
+.content{
+  height: calc(100vh - 60px);
+  @apply tw-grid tw-grid-cols-12;
+}
