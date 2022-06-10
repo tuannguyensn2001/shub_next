@@ -1,7 +1,8 @@
 import Image from 'next/image';
+import useAuthStore from "src/store/useAuthStore";
 import styles from './style.module.scss';
 import Link from 'next/link';
-import { Avatar } from '@chakra-ui/react';
+import {Avatar} from '@chakra-ui/react';
 
 const menu = [
     {
@@ -23,6 +24,9 @@ const menu = [
 ];
 
 function Header() {
+
+    const user = useAuthStore(state => state.user);
+
     return (
         <div className={styles.header}>
             <div className={'tw-px-5 tw-flex tw-justify-between tw-h-full'}>
@@ -55,7 +59,7 @@ function Header() {
                     </ul>
                 </div>
                 <div className={'tw-flex tw-flex-col tw-justify-center'}>
-                    <Avatar src={'https://bit.ly/kent-c-dodds'} />
+                    {user?.profile?.avatar && <Avatar src={user?.profile?.avatar}/>}
                 </div>
             </div>
         </div>
